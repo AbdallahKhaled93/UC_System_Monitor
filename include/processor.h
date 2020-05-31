@@ -7,7 +7,7 @@ class Processor {
   float Utilization();
 
  private:
-  std::vector<long int> cpuPrevTimes{0,0,0,0,0,0,0,0,0,0};
+  long int prevIdle, prevActive;
 };
 
 #endif

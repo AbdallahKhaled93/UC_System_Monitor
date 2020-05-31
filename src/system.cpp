@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <algorithm>
 #include <cstddef>
 #include <set>
 #include <string>
@@ -14,23 +15,29 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
+
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+vector<Process>& System::Processes() {
+  vector<int> pids = LinuxParser::Pids();
+  // clear the vector to populate with a new batch of processes
+  processes_.clear();
+
+  // Add processes with pids read from linux parser
+  for (int pid : pids) {
+    processes_.push_back(Process(pid));
+  }
+  return processes_;
+}
 
 std::string System::Kernel() { return LinuxParser::Kernel(); }
 
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
 
-// TODO: Return the operating system name
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
-// TODO: Return the number of processes actively running on the system
-int System::RunningProcesses() { return 0; }
+int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
-// TODO: Return the total number of processes on the system
-int System::TotalProcesses() { return 0; }
+int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 long int System::UpTime() { return LinuxParser::UpTime(); }
