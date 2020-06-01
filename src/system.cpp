@@ -19,6 +19,7 @@ using std::vector;
 Processor& System::Cpu() { return cpu_; }
 
 vector<Process>& System::Processes() {
+
   vector<int> pids = LinuxParser::Pids();
   // clear the vector to populate with a new batch of processes
   processes_.clear();
@@ -27,6 +28,11 @@ vector<Process>& System::Processes() {
   for (int pid : pids) {
     processes_.push_back(Process(pid));
   }
+
+  // Sort by the 10 most cpu usage processes
+  std::sort(processes_.begin(), processes_.end());
+  std::reverse(processes_.begin(), processes_.end());
+
   return processes_;
 }
 

@@ -11,26 +11,24 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-int Process::Pid() { return pid; }
+int Process::Pid() const { return pid; }
 
-float Process::CpuUtilization() {
-  float processActiveTime = (float)(LinuxParser::ActiveJiffies(this->pid)) /
-                            (float)sysconf(_SC_CLK_TCK);
+float Process::CpuUtilization() const {
+
+  long int processActiveTime = (LinuxParser::ActiveJiffies(this->pid)) /sysconf(_SC_CLK_TCK);
   long int processUptime = this->UpTime();
 
-  cpuUtilization = 100.0f * (processActiveTime / processUptime);
-
-  return cpuUtilization;
+  return (float)processActiveTime / (float)processUptime;
 }
 
-string Process::Command() { return LinuxParser::Command(this->pid); }
+string Process::Command() const { return LinuxParser::Command(this->pid); }
 
-string Process::Ram() { return LinuxParser::Ram(this->pid); }
+string Process::Ram() const { return LinuxParser::Ram(this->pid); }
 
-string Process::User() { return LinuxParser::User(this->pid); }
+string Process::User() const { return LinuxParser::User(this->pid); }
 
-long int Process::UpTime() { return LinuxParser::UpTime(this->pid); }
+long int Process::UpTime() const { return LinuxParser::UpTime(this->pid); }
 
 bool Process::operator<(Process const& a) const {
-  return this->cpuUtilization < a.cpuUtilization ? true : false;
+  return this->CpuUtilization() < a.CpuUtilization() ? true : false;
 }
